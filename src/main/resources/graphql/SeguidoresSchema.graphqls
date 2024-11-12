@@ -1,0 +1,7 @@
+type Seguidores{
+    id: String
+    alias: String
+    nombre: String
+    apellido: String
+    fotoPerfilUrl: String
+}

@@ -1,0 +1,53 @@
+
+type Publicacion{
+    id: String
+    descripcion: String
+    mediaUrl: String
+    count_coment: Int
+    count_likes: Int
+    comentarios: [Comentario]
+    usuario: UsuarioPublicacion
+}
+
+type PublicacionOut{
+    id: String
+    descripcion: String
+    mediaUrl: String
+    count_coment: Int
+    count_likes: Int
+    fechaHora: Date
+    comentariosOut: [ComentarioOut]
+    usuario: UsuarioPublicacion
+}
+
+type ComentarioOut{
+    id: String
+    comentario: String
+    usuario: UsuarioPublicacion #preguntar a leo
+}
+type UsuarioPublicacion{
+    id : String
+    nombre : String
+    apellido : String
+    alias : String
+    fotoPerfilUrl : String
+}
+
+type UsuariosLikes{
+    id: String
+    nombre: String
+    apellido: String
+    alias: String
+    fotoPerfilUrl: String
+}
+
+type Pagina{
+    id: String
+    nombre: String
+}
+
+type Comentario{
+    id: String
+    comentario: String
+    idAliasUsuario: String
+}

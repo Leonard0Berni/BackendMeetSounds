@@ -1,0 +1,273 @@
+type Query{
+
+    #Usuario Query
+    buscarUsuarioPorId(id: String): Usuario
+    buscarTodosLosUsuarios : [Usuario]
+    buscarUsuarioPorTexto(text: String): [Usuario]
+    buscarPorAlias(alias: String): Usuario
+    buscarUsuariosPorInstrumentos(instrumentos: [String!]!): [Usuario]
+    misLikesUsuario(usuarioAlias: String!): [Publicacion]
+    existByAlias(alias: String): Boolean
+    verificaSiSigue(aliasVisitante:String!, aliasPerfil:String!): Boolean
+
+    #Instrumentos y TipoInstrumentos/Generos Musicales
+    buscarTodosLosInstrumentos : [Instrumento]
+    buscarTodosLosTiposInstrumento : [TipoInstrumento]
+    buscarInstrumentosPorTipo(tipo: String) : [Instrumento]
+    buscarInstrumentoPorNombre(nombre: String) : Instrumento
+    listarTodosLosGeneros: [GeneroMusical]
+    buscarGeneroPorId(id: String!): GeneroMusical
+
+    # Publiacion Query
+    listarPublicaciones: [PublicacionOut]
+    listarComentariosPorId(publicacionId: String): [ComentarioOut]
+    misLikesPublicacion(idPublicacion: String!): [UsuariosLikes]
+    buscarPublicacionPorId(id: String): Publicacion
+    buscarPublicacionPorIdOut(id: String): PublicacionOut
+    listarPublicacionesUsuario(alias: String!):[Publicacion]
+
+    # Banda
+    buscarBandaPorNombre(nombreBanda: String): Banda
+    buscarBandaPorId(idBanda: String): Banda
+    listarBandas: [Banda]
+    listarBandaPorUsuario(idUsuario: String): [Banda]
+
+    # Seguidores
+    misSeguidores(idAlias: String): [Seguidores]
+    misSeguidoresBanda(idBanda : String): [Usuario]
+
+    
+
+}
+
+type Mutation{
+    #Cambio
+    #Recordar que el nombre del la query o mutation deber ser igual al metodo en el controlador
+    #Los parametros a recibir deben ser iguales a los del controlador
+    #Para devolcer valores, graphql toma tambien los type que estan en otros files.graphqls
+
+    #Usuario Mutation
+    guardarUsuario(user: userInput): Usuario
+    comprobarCredenciales(user:userInput) : Usuario
+    actualizarUsuario(id: ID!, user: IactualizarUsuario): Usuario
+    actualizarDescripcion(id: ID!, descripcion: String!): Boolean
+    actualizarContrasena(id: ID!, contrasena : String!) : Boolean
+    actualizarRedes(id: ID!, redes: RedesInput): Boolean
+    eliminarPorIdUsuario(id: ID!): Boolean
+    actualizarInstrumentosUsuario(idInstrumento: ID!, idUsuario: ID!) : Usuario
+    #actualizar solo nombre y apellido
+    actualizarNombreApellidoPorAlias(alias: String!, nombre: String!, apellido: String!): Usuario
+
+    #Seguidos
+    seguirUsuario(aliasSeguidor:String!, aliasSeguido:String!): Boolean
+    dejarDeSeguirUsuario(aliasSeguidor:String!, aliasSeguido:String!): Boolean
+
+
+    #Banda Mutation
+    crearBanda(idUsuario: ID!, banda: BandaInput): Banda
+    cambiarNombre(id: ID!, nombre: String): Banda
+    cambiarDescripcion(id: ID!, descripcion: String): Banda
+    eliminarBanda(id: ID!): Boolean
+    anadirMiembros(nombreBanda: String, idUsuarios: [String]): Banda
+    eliminarIntegrante(idBanda: ID!, idIntegrante: ID!): Banda
+    seguirBanda(idBanda : String, aliasUsuario: String):Boolean
+    dejarDeSeguirBanda(idBanda : String, aliasUsuario : String): Boolean
+
+    #Instrumentos y TipoInstrumentos Mutation/Generos Musicales
+    guardarInstrumento(instrumento: InstrumentoInput, tipo:String) : Instrumento
+    eliminarInstrumentoPorId(id: ID!): Boolean
+    guardarTipoInstrumento(tipoInstrumento: TipoInstrumentoInput): TipoInstrumento
+    eliminarTipoInstrumentoPorId(id: ID!): Boolean
+    guardarGenero(nombre: String!): GeneroMusical
+    eliminarGenero(id: String!): Boolean
+
+    # Publicacion Mutation
+    eliminarPublicacionPorId(idAlias: String!, idPublicacion: String!): Boolean
+    meGusta(idPublicacion: String!, usuarioAlias: String!): Boolean
+    #crearPublicacion(idUsuario: ID!,descripcion: String): Publicacion
+    comentar(publicacionId: String, idAliasUsuario: String, text: String): Boolean
+
+    # Seguidos Mutation
+
+    # Seguidores
+    eliminarSeguidor(idAliasUsuario: String, idAliasSeguidor: String): Boolean
+
+
+    # Guardar About
+    guardarAbout(
+        usuarioId: String!,
+        rol: String!,
+        instrumentos: [String!]!,
+        generoMus: [String!]!,
+        descripcion: String
+    ): About
+
+    #Guardar onboarding
+    actualizarRolUsuarioPorAlias(alias: String!, rol: String!): Usuario
+    actualizarInstrumentosUsuarioPorAlias(alias: String!, instrumentoIds: [String!]!): Usuario
+    actualizarGenerosUsuarioPorAlias(alias: String!, generoIds: [String!]!): Usuario
+    actualizarDescripcionUsuarioPorAlias(alias: String!, descripcion: String!): Usuario
+
+
+}
+
+scalar Date
+type Usuario{
+    #aqui faltan las fechas
+    id : String
+    nombre : String
+    fotoPerfilUrl : String
+    fotoPortadaUrl : String
+    apellido : String
+    alias : String
+    email : String
+    telefono : String
+    edad : Int
+    genero : String
+    ubicacion : Ubicacion
+    longitud: Float
+    latitud: Float
+    c_seguidores : Int
+    c_seguidos : Int
+    misInstru : [Instrumento]
+    misBandas : [Banda]
+    misPublicaciones : [Publicacion]
+    descripcion : String
+    redes : Redes
+    contrasena : String
+    fechaNacimiento: Date
+    seguidos: [String]
+    seguidores: [String]
+    rol: String 
+    misGeneros: [GeneroMusical] 
+}
+
+type Redes{
+    instagram : String
+    youtube : String
+    x : String
+    whatsapp : String
+    email : String
+}
+
+type Banda{
+    id : String
+    nombreBanda : String
+    descripcion: String
+    urlFotoBanda: String
+    idCreador : String
+    miembros : [String]
+}
+
+type Ubicacion{
+    pais : Pais
+    estado : Estado
+    departamento : Departamento
+}
+
+type Pais{
+    nombre : String
+}
+
+type Estado{
+    nombre : String
+}
+
+type Departamento{
+    nombre : String
+}
+
+type Instrumento{
+    id : String
+    nombre : String
+    tipoInstrumento : TipoInstrumento
+}
+
+type TipoInstrumento{
+    id: String
+    nombre : String
+}
+type About {
+    id: ID!
+    usuarioId: String!
+    rol: String
+    instrumentos: [String]
+    generoMus: [String]
+    descripcion: String
+}
+type GeneroMusical {
+    id: String
+    nombre: String
+}
+
+
+input userInput{
+    #Es la informacion escencial
+    nombre : String
+    apellido : String
+    alias : String
+    email : String
+    telefono : String
+    fechaNacimiento: Date
+    edad : Int
+    ubicacion : UbicacionInput
+    genero : String
+    contrasena : String
+}
+
+input IactualizarUsuario{
+    id : String
+    nombre : String
+    apellido : String
+    alias : String
+    email : String
+    contrasena : String
+    telefono : String
+    edad : Int
+    ubicacion : UbicacionInput
+    c_seguidores : Int
+    c_seguidos : Int
+    misInstru : [InstrumentoInput]
+    misBandas : [BandaInput]
+    descripcion : String
+    redes : RedesInput
+}
+
+input BandaInput{
+    nombreBanda: String
+    descripcion: String
+    miembros: [String]
+}
+
+input UbicacionInput{
+    pais : PaisInput
+    estado : EstadoInput
+    departamento : DepartamentoInput
+}
+
+input PaisInput{
+    nombre : String
+}
+
+input EstadoInput{
+    nombre : String
+}
+
+input DepartamentoInput{
+    nombre : String
+}
+
+input RedesInput{
+    instagram : String
+    youtube : String
+    x : String
+    whatsapp : String
+    email : String
+}
+
+input InstrumentoInput{
+    nombre : String
+}
+input TipoInstrumentoInput{
+    nombre : String
+}
